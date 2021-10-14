@@ -1,0 +1,41 @@
+System Abstraction Libraries
+==============================================
+The <bf-syslib> package contains sources to build system abstraction
+functions needed by BF driver stack (e.g. bf-drivers). The interfaces to these
+functions is not expected to change but the implementation is expected to be
+mapped to the target system's OS services.
+
+Here's a summary of the functions implemented in this package
+
+    bf_sal:
+        Timers
+        Threading
+        Synchronization
+        Tracing and Logging
+        Heap memory management
+        DMA memory management
+
+While the above functions are implementated for LINUX, it is expected they
+would be ported to the target system's OS services before the driver stack
+is exercised.
+
+Building and installing
+=======================
+Please refer to P4 Studio installation guide
+
+Artifacts installed
+===================
+Here're the artifacts that get installed for <bf-syslibs>
+
+    header files for SAL API to $SDE_INSTALL/include/target_sys
+
+    libtarget_sys.[a,la,so] to $SDE_INSTALL/lib/
+        System abstraction library used by BF driver stack
+
+    zlog-cfg to install/share/target_sys/
+        Configuration file used with logging and tracing implementation
+
+Documentation:<TBD>
+==============
+    sudo apt-get install doxygen
+    make doc
