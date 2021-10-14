@@ -31,5 +31,5 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: cd build && make install
+      run: cd build && make && make install
 
