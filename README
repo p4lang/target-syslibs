@@ -1,7 +1,7 @@
 System Abstraction Libraries
 ==============================================
-The <bf-syslib> package contains sources to build system abstraction
-functions needed by BF driver stack (e.g. bf-drivers). The interfaces to these
+The <target-syslib> package contains sources to build system abstraction
+functions needed by TDI or any device drivers. The interfaces to these
 functions is not expected to change but the implementation is expected to be
 mapped to the target system's OS services.
 
@@ -21,16 +21,21 @@ is exercised.
 
 Building and installing
 =======================
-Please refer to P4 Studio installation guide
+```
+mkdir -p build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=<install path> ..
+make install
+```
 
 Artifacts installed
 ===================
 Here're the artifacts that get installed for <bf-syslibs>
 
-    header files for SAL API to $SDE_INSTALL/include/target_sys
+    header files for SAL API to <CMAKE_INSTALL_PREFIX>/include/target_sys
 
-    libtarget_sys.[a,la,so] to $SDE_INSTALL/lib/
-        System abstraction library used by BF driver stack
+    libtarget_sys.[a,la,so] to <CMAKE_INSTALL_PREFIX>/lib/
+        System abstraction library used by TDI and device drivers
 
     zlog-cfg to install/share/target_sys/
         Configuration file used with logging and tracing implementation
@@ -39,3 +44,4 @@ Documentation:<TBD>
 ==============
     sudo apt-get install doxygen
     make doc
+
