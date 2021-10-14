@@ -72,28 +72,28 @@ add_subdirectory(third-party/libev)
 function(buildZlog)
   include_directories(zlog/src/)
   add_library(zlog_o OBJECT
-		third-party/zlog/src/buf.c
-		third-party/zlog/src/category.c
-		third-party/zlog/src/category_table.c
-		third-party/zlog/src/conf.c
-		third-party/zlog/src/event.c
-		third-party/zlog/src/format.c
-		third-party/zlog/src/level.c
-		third-party/zlog/src/level_list.c
-		third-party/zlog/src/mdc.c
-		third-party/zlog/src/record.c
-		third-party/zlog/src/record_table.c
-		third-party/zlog/src/rotater.c
-		third-party/zlog/src/rule.c
-		third-party/zlog/src/spec.c
-		third-party/zlog/src/thread.c
-		third-party/zlog/src/zc_arraylist.c
-		third-party/zlog/src/zc_hashtable.c
-		third-party/zlog/src/zc_profile.c
-		third-party/zlog/src/zc_util.c
-		third-party/zlog/src/zlog.c)
+    third-party/zlog/src/buf.c
+    third-party/zlog/src/category.c
+    third-party/zlog/src/category_table.c
+    third-party/zlog/src/conf.c
+    third-party/zlog/src/event.c
+    third-party/zlog/src/format.c
+    third-party/zlog/src/level.c
+    third-party/zlog/src/level_list.c
+    third-party/zlog/src/mdc.c
+    third-party/zlog/src/record.c
+    third-party/zlog/src/record_table.c
+    third-party/zlog/src/rotater.c
+    third-party/zlog/src/rule.c
+    third-party/zlog/src/spec.c
+    third-party/zlog/src/thread.c
+    third-party/zlog/src/zc_arraylist.c
+    third-party/zlog/src/zc_hashtable.c
+    third-party/zlog/src/zc_profile.c
+    third-party/zlog/src/zc_util.c
+    third-party/zlog/src/zlog.c)
 
-        target_compile_options(zlog_o PRIVATE -Wno-shadow -Wno-sign-compare -Wno-unused-parameter -Wno-error=cpp)
+  target_compile_options(zlog_o PRIVATE -Wno-shadow -Wno-sign-compare -Wno-unused-parameter -Wno-error=cpp)
   add_library(zlog SHARED EXCLUDE_FROM_ALL $<TARGET_OBJECTS:zlog_o>)
   #  install(FILES  third-party/zlog-cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/targetsys)
   file(COPY third-party/zlog/src/ DESTINATION
@@ -121,3 +121,5 @@ endif()
 
 file(COPY include/target_sys DESTINATION ${CMAKE_INSTALL_PREFIX}/include
   PATTERN "*.am" EXCLUDE)
+
+install(TARGETS targetsys DESTINATION ${CMAKE_INSTALL_PREFIX})
