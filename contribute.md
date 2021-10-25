@@ -1,4 +1,3 @@
-
 # List of contributors
 
 Steve Licking <Steve.Licking@intel.com>
