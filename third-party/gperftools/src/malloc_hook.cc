@@ -1,11 +1,11 @@
 // -*- Mode: C++; c-basic-offset: 2; indent-tabs-mode: nil -*-
 // Copyright (c) 2005, Google Inc.
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are
 // met:
-// 
+//
 //     * Redistributions of source code must retain the above copyright
 // notice, this list of conditions and the following disclaimer.
 //     * Redistributions in binary form must reproduce the above
@@ -15,7 +15,7 @@
 //     * Neither the name of Google Inc. nor the names of its
 // contributors may be used to endorse or promote products derived from
 // this software without specific prior written permission.
-// 
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -647,6 +647,14 @@ extern "C" int MallocHook_GetCallerStackTrace(void** result, int max_depth,
     return 0;
   for (int i = 0; i < depth; ++i) {  // stack[0] is our immediate caller
     if (InHookCaller(stack[i])) {
+      // fast-path to slow-path calls may be implemented by compiler
+      // as non-tail calls. Causing two functions on stack trace to be
+      // inside google_malloc. In such case we're skipping to
+      // outermost such frame since this is where malloc stack frames
+      // really start.
+      while (i + 1 < depth && InHookCaller(stack[i+1])) {
+        i++;
+      }
       RAW_VLOG(10, "Found hooked allocator at %d: %p <- %p",
                    i, stack[i], stack[i+1]);
       i += 1;  // skip hook caller frame
