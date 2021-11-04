@@ -3,4 +3,4 @@
 	url = https://github.com/HardySimpson/zlog.git
 [submodule "third-party/gperftools"]
 	path = third-party/gperftools
-	url = git@github.com:gperftools/gperftools.git
+	url = https://github.com/gperftools/gperftools.git
