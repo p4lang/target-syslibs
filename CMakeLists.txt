@@ -67,7 +67,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third-party/libev/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third-party/zlog/include)
 add_subdirectory(src/bf_sal)
 add_subdirectory(third-party/libev)
-#add_subdirectory(third-party/zlog)
 
 function(buildZlog)
   include_directories(zlog/src/)
@@ -93,7 +92,8 @@ function(buildZlog)
     third-party/zlog/src/zc_util.c
     third-party/zlog/src/zlog.c)
 
-  target_compile_options(zlog_o PRIVATE -Wno-shadow -Wno-sign-compare -Wno-unused-parameter -Wno-error=cpp)
+  target_compile_options(zlog_o PRIVATE -Wno-shadow -Wno-sign-compare
+    -Wno-unused-parameter -Wno-error=cpp -Wno-error=parentheses)
   add_library(zlog SHARED EXCLUDE_FROM_ALL $<TARGET_OBJECTS:zlog_o>)
   #  install(FILES  third-party/zlog-cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/targetsys)
   file(COPY third-party/zlog/src/ DESTINATION
