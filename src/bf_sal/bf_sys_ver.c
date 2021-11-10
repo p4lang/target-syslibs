@@ -24,8 +24,8 @@
 #include <target_sys/bf_sal/bf_sys_intf.h>
 #include "bf_sys_ver.h"
 
-const char *bf_syslib_get_version(void) { return BF_SYSLIB_VER; }
+const char *target_syslib_get_version(void) { return TARGET_SYSLIB_VER; }
 
-const char *bf_syslib_get_internal_version(void) {
-  return BF_SYSLIB_INTERNAL_VER;
+const char *target_syslib_get_internal_version(void) {
+  return TARGET_SYSLIB_INTERNAL_VER;
 }

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(libtargetsys VERSION 0.1 LANGUAGES C)
+project(libtarget_sys VERSION 0.1 LANGUAGES C)
 
 if(TARGETSYS-DEBUG-MODE)
     add_definitions(-DTARGET_SYS_LIBS_DEBUG_MODE)
@@ -23,12 +23,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third-party)
 if (TCMALLOC)
   add_definitions(-DBF_SYS_LIBS_USE_TCMALLOC)
   if (PROFILER)
-    set(TCMALLOC_FLAGS "--enable-allocator-debug-tools --disable-shared")
+    set(TCMALLOC_FLAGS "--disable-shared")
   else()
-    set(TCMALLOC_FLAGS "--enable-allocator-debug-tools --disable-shared --enable-minimal")
+    set(TCMALLOC_FLAGS "--disable-shared --enable-minimal")
   endif()
-  set(C_FLAGS " -O2 -fPIC")
-  set(CXX_FLAGS " -O2 -fPIC")
+  set(C_FLAGS " -O3 -fPIC")
+  set(CXX_FLAGS " -O3 -fPIC")
   if (FORCE32)
     set(C_FLAGS "${C_FLAGS} -m32")
     set(CXX_FLAGS "${CXX_FLAGS} -m32")
@@ -102,7 +102,7 @@ endfunction()
 
 buildZlog()
 
-add_library(targetsys SHARED
+add_library(target_sys SHARED
   $<TARGET_OBJECTS:zlog_o>
   $<TARGET_OBJECTS:ev_o>
   $<TARGET_OBJECTS:bf_sal_o>
@@ -110,16 +110,16 @@ add_library(targetsys SHARED
 if (TCMALLOC)
   if (NOT ASAN)
     if (PROFILER)
-      target_link_libraries(targetsys PUBLIC tcmalloclib stdc++ pthread unwind)
+      target_link_libraries(target_sys PUBLIC tcmalloclib stdc++ pthread unwind)
     else()
-      target_link_libraries(targetsys PUBLIC tcmalloclib stdc++ pthread)
+      target_link_libraries(target_sys PUBLIC tcmalloclib stdc++ pthread)
     endif()
   endif()
 else()
-target_link_libraries(targetsys PUBLIC pthread)
+target_link_libraries(target_sys PUBLIC pthread)
 endif()
 
 file(COPY include/target_sys DESTINATION ${CMAKE_INSTALL_PREFIX}/include
   PATTERN "*.am" EXCLUDE)
 
-install(TARGETS targetsys DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(TARGETS target_sys DESTINATION ${CMAKE_INSTALL_PREFIX})
