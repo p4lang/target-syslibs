@@ -97,7 +97,7 @@ function(buildZlog)
   add_library(zlog SHARED EXCLUDE_FROM_ALL $<TARGET_OBJECTS:zlog_o>)
   #  install(FILES  third-party/zlog-cfg DESTINATION ${CMAKE_INSTALL_PREFIX}/share/targetsys)
   file(COPY third-party/zlog/src/ DESTINATION
-    ${CMAKE_INSTALL_PREFIX}/include/target_sys/zlog/ FILES_MATCHING PATTERN *.h)
+    ${CMAKE_INSTALL_PREFIX}/include/target-sys/zlog/ FILES_MATCHING PATTERN *.h)
 endfunction()
 
 buildZlog()
@@ -119,7 +119,7 @@ else()
 target_link_libraries(target_sys PUBLIC pthread)
 endif()
 
-file(COPY include/target_sys DESTINATION ${CMAKE_INSTALL_PREFIX}/include
+file(COPY include/target-sys DESTINATION ${CMAKE_INSTALL_PREFIX}/include
   PATTERN "*.am" EXCLUDE)
 
 install(TARGETS target_sys DESTINATION ${CMAKE_INSTALL_PREFIX})

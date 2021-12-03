@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <target_sys/bf_sal/bf_sys_dma.h>
+#include <target-sys/bf_sal/bf_sys_dma.h>
 
 #define DMA_POOL_CNT 20
 #define DMA_BUF_MAX_CNT 3200

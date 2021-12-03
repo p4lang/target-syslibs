@@ -38,14 +38,14 @@
 #include <stdbool.h>
 #include <sys/stat.h>
 #include <assert.h>
-#include <target_sys/bf_sal/bf_sys_mem.h>
-#include <target_sys/bf_sal/bf_sys_str.h>
+#include <target-sys/bf_sal/bf_sys_mem.h>
+#include <target-sys/bf_sal/bf_sys_str.h>
 
 /* use zlog for logging only */
 #include <zlog/src/zlog.h>
 #include <zlog/src/category.h>
 
-#include <target_sys/bf_sal/bf_sys_log.h>
+#include <target-sys/bf_sal/bf_sys_log.h>
 #include "bf_sys_log_internal.h"
 
 /**

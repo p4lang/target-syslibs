@@ -22,8 +22,8 @@
  *
  ******************************************************************************/
 #include <string.h>
-#include <target_sys/bf_sal/bf_sys_mem.h>
-#include <target_sys/bf_sal/bf_sys_str.h>
+#include <target-sys/bf_sal/bf_sys_mem.h>
+#include <target-sys/bf_sal/bf_sys_str.h>
 
 char *bf_sys_strdup(const char *c) {
   if (!c) return NULL;
