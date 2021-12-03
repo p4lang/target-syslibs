@@ -33,7 +33,7 @@
 #include "bf_sys_assert.h"
 #include "bf_sys_dma.h"
 
-const char *bf_syslib_get_version(void);
-const char *bf_syslib_get_internal_version(void);
+const char *target_syslib_get_version(void);
+const char *target_syslib_get_internal_version(void);
 
 #endif /* BF_SYS_INTF_H_INCLUDED */

@@ -24,11 +24,11 @@
 #ifndef BF_SYS_BLD_VER_H
 #define BF_SYS_BLD_VER_H
 
-#ifndef BF_SYSLIB_BLD_VER
-#define BF_SYSLIB_BLD_VER "0"
+#ifndef TARGET_SYSLIB_BLD_VER
+#define TARGET_SYSLIB_BLD_VER "0"
 #endif
-#ifndef BF_SYSLIB_GIT_VER
-#define BF_SYSLIB_GIT_VER "000"
+#ifndef TARGET_SYSLIB_GIT_VER
+#define TARGET_SYSLIB_GIT_VER "000"
 #endif
 
 #endif /* BF_SYS_BLD_VER_H */
