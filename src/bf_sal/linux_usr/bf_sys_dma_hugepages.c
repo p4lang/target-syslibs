@@ -40,8 +40,8 @@
 #include <assert.h>
 #include <sys/mman.h>
 #include <errno.h>
-#include <target_sys/bf_sal/bf_sys_dma.h>
-#include <target_sys/bf_sal/bf_sys_mem.h>
+#include <target-sys/bf_sal/bf_sys_dma.h>
+#include <target-sys/bf_sal/bf_sys_mem.h>
 
 #define BF_INVALID_PHY_ADDR ((bf_phys_addr_t)(0xFFFFFFFFFFFFFFFFULL))
 #define BF_INVALID_DMA_ADDR ((bf_dma_addr_t)(0xFFFFFFFFFFFFFFFFULL))

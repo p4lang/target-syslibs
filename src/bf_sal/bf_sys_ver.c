@@ -21,7 +21,7 @@
  * $Id: $
  *
  ******************************************************************************/
-#include <target_sys/bf_sal/bf_sys_intf.h>
+#include <target-sys/bf_sal/bf_sys_intf.h>
 #include "bf_sys_ver.h"
 
 const char *bf_syslib_get_version(void) { return BF_SYSLIB_VER; }

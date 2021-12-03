@@ -35,8 +35,8 @@
 #include <errno.h>
 #include <semaphore.h>
 
-#include <target_sys/bf_sal/bf_sys_sem.h>
-#include <target_sys/bf_sal/bf_sys_mem.h>
+#include <target-sys/bf_sal/bf_sys_sem.h>
+#include <target-sys/bf_sal/bf_sys_mem.h>
 
 int bf_sys_mutex_init(bf_sys_mutex_t *mtx) {
   int x;

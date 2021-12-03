@@ -25,7 +25,7 @@
 #include <unistd.h>
 #include <semaphore.h>
 #include <assert.h>
-#include <target_sys/bf_sal/bf_sys_intf.h>
+#include <target-sys/bf_sal/bf_sys_intf.h>
 
 static bf_sys_mutex_t test_mtx;
 static bf_sys_timer_t test_timer;

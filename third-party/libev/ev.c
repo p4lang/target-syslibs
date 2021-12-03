@@ -1571,7 +1571,7 @@ ev_syserr (const char *msg)
     }
 }
 
-#include "target_sys/bf_sal/bf_sys_mem.h"
+#include "target-sys/bf_sal/bf_sys_mem.h"
 static void *
 ev_realloc_emul (void *ptr, long size) EV_THROW
 {

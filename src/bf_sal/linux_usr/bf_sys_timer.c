@@ -36,8 +36,8 @@
 #include <time.h>
 
 #include <libev/ev.h>
-#include <target_sys/bf_sal/bf_sys_timer.h>
-#include <target_sys/bf_sal/bf_sys_mem.h>
+#include <target-sys/bf_sal/bf_sys_timer.h>
+#include <target-sys/bf_sal/bf_sys_mem.h>
 
 typedef struct {
   ev_async async_w;
