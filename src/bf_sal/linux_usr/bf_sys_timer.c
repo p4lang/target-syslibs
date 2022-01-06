@@ -83,7 +83,11 @@ bf_sys_timer_status_t bf_sys_timer_create(bf_sys_timer_t *t,
 }
 
 bf_sys_timer_status_t bf_sys_timer_start(bf_sys_timer_t *t) {
-  ev_timer *evt = (ev_timer *)t->timer;
+  ev_timer *evt = NULL;
+  if ((t == NULL) || (t->timer == NULL)) {
+    return BF_SYS_TIMER_INVALID_ARG;
+  }
+  evt = (ev_timer *)t->timer;
   if (!u.inited) {
     return BF_SYS_TIMER_NOT_INITED;
   }
@@ -95,7 +99,11 @@ bf_sys_timer_status_t bf_sys_timer_start(bf_sys_timer_t *t) {
 }
 
 bf_sys_timer_status_t bf_sys_timer_stop(bf_sys_timer_t *t) {
-  ev_timer *evt = (ev_timer *)t->timer;
+  ev_timer *evt = NULL;
+  if ((t == NULL) || (t->timer == NULL)) {
+    return BF_SYS_TIMER_INVALID_ARG;
+  }
+  evt = (ev_timer *)t->timer;
   if (!u.inited) {
     return BF_SYS_TIMER_NOT_INITED;
   }
@@ -107,7 +115,7 @@ bf_sys_timer_status_t bf_sys_timer_stop(bf_sys_timer_t *t) {
 }
 
 bf_sys_timer_status_t bf_sys_timer_del(bf_sys_timer_t *t) {
-  if (t == NULL) {
+  if ((t == NULL) || (t->timer == NULL)) {
     return BF_SYS_TIMER_INVALID_ARG;
   }
 

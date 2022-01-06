@@ -73,7 +73,7 @@ typedef struct {
       pool_buf_offset; /* position of current head into the above queue */
   bf_phys_addr_t base_phy_addr; /* physical address of first buffer of pool */
   volatile int pool_gate;       /* assist for atomic operation */
-  char name[32];                /* pool name */
+  char name[64];                /* pool name */
   bf_huge_page_info_t *huge_page_info_ptr; /* an array of huge page pointers */
   int num_huge_pages; /* number of huge pages allocated for the DMA memory pool
                          */
