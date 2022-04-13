@@ -23,7 +23,7 @@
  ******************************************************************************/
 
 int bf_sys_dbg_mode() {
-#ifdef BF_SYS_LIBS_DEBUG_MODE
+#ifdef TARGET_SYS_LIBS_DEBUG_MODE
   return 1;
 #else
   return 0;
