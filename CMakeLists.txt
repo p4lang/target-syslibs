@@ -122,4 +122,4 @@ endif()
 file(COPY include/target-sys DESTINATION ${CMAKE_INSTALL_PREFIX}/include
   PATTERN "*.am" EXCLUDE)
 
-install(TARGETS target_sys DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(TARGETS target_sys DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
