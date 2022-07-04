@@ -311,7 +311,7 @@ int bf_sys_rwlock_unlock(bf_sys_rwlock_t *lock) {
  * rw_mutex_lock_apis
  */
 int bf_sys_rw_mutex_lock_init(bf_sys_rw_mutex_lock_t *rwlock) {
-  int status;
+  int status, status1, status2;
   if (rwlock == NULL) return EINVAL;
 
   if (rwlock->valid == 1) return EBUSY;
@@ -332,38 +332,38 @@ int bf_sys_rw_mutex_lock_init(bf_sys_rw_mutex_lock_t *rwlock) {
 
   rwlock->read = (pthread_cond_t *)bf_sys_malloc(sizeof(pthread_cond_t));
   if (rwlock->read == NULL) {
-    pthread_mutex_destroy(rwlock->mutex);
+    status = pthread_mutex_destroy(rwlock->mutex);
     bf_sys_free(rwlock->mutex);
-    return -1;
+    return (status != 0 ? status : -1);
   }
   status = pthread_cond_init(rwlock->read, NULL);
   if (status != 0) {
     /* Destroy mutex if creation of cond variable fails*/
-    pthread_mutex_destroy(rwlock->mutex);
+    status1 = pthread_mutex_destroy(rwlock->mutex);
     bf_sys_free(rwlock->mutex);
     bf_sys_free(rwlock->read);
-    return status;
+    return (status1 != 0 ? status1 : status);
   }
 
   rwlock->write = (pthread_cond_t *)bf_sys_malloc(sizeof(pthread_cond_t));
   if (rwlock->write == NULL) {
-    pthread_mutex_destroy(rwlock->mutex);
+    status = pthread_mutex_destroy(rwlock->mutex);
     bf_sys_free(rwlock->mutex);
-    pthread_cond_destroy(rwlock->read);
+    status1 = pthread_cond_destroy(rwlock->read);
     bf_sys_free(rwlock->read);
-    return -1;
+    return (status != 0 ? status : (status1 != 0 ? status1 : -1));
   }
 
   status = pthread_cond_init(rwlock->write, NULL);
   if (status != 0) {
     /* Destroy mutex and read cond variable if creation of write cond variable
      * fails*/
-    pthread_mutex_destroy(rwlock->mutex);
-    pthread_cond_destroy(rwlock->read);
+    status1 = pthread_mutex_destroy(rwlock->mutex);
+    status2 = pthread_cond_destroy(rwlock->read);
     bf_sys_free(rwlock->mutex);
     bf_sys_free(rwlock->read);
     bf_sys_free(rwlock->write);
-    return status;
+    return (status1 != 0 ? status1 : (status2 != 0 ? status2 : status));
   }
 
   rwlock->valid = 1;
@@ -381,14 +381,14 @@ int bf_sys_rw_mutex_lock_del(bf_sys_rw_mutex_lock_t *rwlock) {
 
   // Return Busy if any threads are active
   if (rwlock->r_active > 0 || rwlock->w_active > 0) {
-    pthread_mutex_unlock(rwlock->mutex);
-    return EBUSY;
+    status = pthread_mutex_unlock(rwlock->mutex);
+    return (status != 0 ? status : EBUSY);
   }
 
   // Return Busy if any threads are waiting
   if (rwlock->r_wait > 0 || rwlock->w_wait > 0) {
-    pthread_mutex_unlock(rwlock->mutex);
-    return EBUSY;
+    status = pthread_mutex_unlock(rwlock->mutex);
+    return (status != 0 ? status : EBUSY);
   }
 
   rwlock->valid = 0;
@@ -407,7 +407,7 @@ int bf_sys_rw_mutex_lock_del(bf_sys_rw_mutex_lock_t *rwlock) {
 }
 
 int bf_sys_rw_mutex_lock_rdlock(bf_sys_rw_mutex_lock_t *rwlock) {
-  int status = 0;
+  int status = 0, status1 = 0;
   if (rwlock == NULL) return EINVAL;
 
   if (rwlock->valid != 1) return EINVAL;
@@ -427,12 +427,12 @@ int bf_sys_rw_mutex_lock_rdlock(bf_sys_rw_mutex_lock_t *rwlock) {
 
   if (status == 0) rwlock->r_active++;
 
-  pthread_mutex_unlock(rwlock->mutex);
-  return status;
+  status1 = pthread_mutex_unlock(rwlock->mutex);
+  return (status1 != 0 ? status1 : status);
 }
 
 int bf_sys_rw_mutex_lock_wrlock(bf_sys_rw_mutex_lock_t *rwlock) {
-  int status = 0;
+  int status = 0, status1 = 0;
   if (rwlock == NULL) return EINVAL;
   if (rwlock->valid != 1) return EINVAL;
 
@@ -451,8 +451,8 @@ int bf_sys_rw_mutex_lock_wrlock(bf_sys_rw_mutex_lock_t *rwlock) {
 
   if (status == 0) rwlock->w_active++;
 
-  pthread_mutex_unlock(rwlock->mutex);
-  return status;
+  status1 = pthread_mutex_unlock(rwlock->mutex);
+  return (status1 != 0 ? status1 : status);
 }
 
 int bf_sys_rw_mutex_lock_rdunlock(bf_sys_rw_mutex_lock_t *rwlock) {

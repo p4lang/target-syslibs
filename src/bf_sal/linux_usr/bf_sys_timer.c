@@ -83,6 +83,7 @@ bf_sys_timer_status_t bf_sys_timer_create(bf_sys_timer_t *t,
 }
 
 bf_sys_timer_status_t bf_sys_timer_start(bf_sys_timer_t *t) {
+  int status = 0;
   ev_timer *evt = NULL;
   if ((t == NULL) || (t->timer == NULL)) {
     return BF_SYS_TIMER_INVALID_ARG;
@@ -91,14 +92,21 @@ bf_sys_timer_status_t bf_sys_timer_start(bf_sys_timer_t *t) {
   if (!u.inited) {
     return BF_SYS_TIMER_NOT_INITED;
   }
-  pthread_mutex_lock(&u.lock);
+  status = pthread_mutex_lock(&u.lock);
+  if (status != 0) {
+    return BF_SYS_TIMER_NO_RESOURCES;
+  }
   ev_timer_start(u.loop, evt);
   ev_async_send(u.loop, &u.async_w);
-  pthread_mutex_unlock(&u.lock);
+  status = pthread_mutex_unlock(&u.lock);
+  if (status != 0) {
+    return BF_SYS_TIMER_NO_RESOURCES;
+  }
   return BF_SYS_TIMER_OK;
 }
 
 bf_sys_timer_status_t bf_sys_timer_stop(bf_sys_timer_t *t) {
+  int status = 0;
   ev_timer *evt = NULL;
   if ((t == NULL) || (t->timer == NULL)) {
     return BF_SYS_TIMER_INVALID_ARG;
@@ -107,10 +115,16 @@ bf_sys_timer_status_t bf_sys_timer_stop(bf_sys_timer_t *t) {
   if (!u.inited) {
     return BF_SYS_TIMER_NOT_INITED;
   }
-  pthread_mutex_lock(&u.lock);
+  status = pthread_mutex_lock(&u.lock);
+  if (status != 0) {
+    return BF_SYS_TIMER_NO_RESOURCES;
+  }
   ev_timer_stop(u.loop, evt);
   ev_async_send(u.loop, &u.async_w);
-  pthread_mutex_unlock(&u.lock);
+  status =  pthread_mutex_unlock(&u.lock);
+  if (status != 0) {
+    return BF_SYS_TIMER_NO_RESOURCES;
+  }
   return BF_SYS_TIMER_OK;
 }
 
