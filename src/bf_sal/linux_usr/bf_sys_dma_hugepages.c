@@ -473,6 +473,10 @@ int bf_sys_dma_pool_create(char *pool_name,
 
   if (dma_pool->base_phy_addr == BF_INVALID_PHY_ADDR) {
     printf("Error getting DMA buf base physical address\n");
+    bf_sys_free(dma_pool);
+    bf_sys_free(vbuf_q);
+    bf_sys_free(vhuge);
+    bf_sys_free(huge_page_info);
     return -1;
   }
   /* intialize the LIFO queue with free buffer pointers */
