@@ -28,6 +28,9 @@
 extern "C" {
 #endif
 
+#include <stddef.h>
+#include <stdint.h>
+
 /**
  * @addtogroup bf_sal-log
  * @{
