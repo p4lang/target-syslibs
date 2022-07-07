@@ -14,8 +14,8 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include <target-sys/bf_sal/bf_sys_intf.h>
 #include "bf_sys_ver.h"
+#include <target-sys/bf_sal/bf_sys_intf.h>
 
 const char *target_syslib_get_version(void) { return TARGET_SYSLIB_VER; }
 

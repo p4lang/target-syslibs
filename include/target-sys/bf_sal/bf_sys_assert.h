@@ -26,27 +26,27 @@
 #ifndef __KERNEL__
 
 #ifndef bf_sys_assert
+#include "bf_sys_log.h"
 #include <assert.h>
 #include <execinfo.h>
-#include "bf_sys_log.h"
 
-#define bf_sys_assert(x)                                                      \
-  do {                                                                        \
-    int assert_val = !!(x);                                                   \
-    if (!assert_val) {                                                        \
-      void *backtrace_buf[128];                                               \
-      int backtrace_depth = backtrace(backtrace_buf, 128);                    \
-      char **backtrace_strings =                                              \
-          backtrace_symbols(backtrace_buf, backtrace_depth);                  \
-      if (backtrace_strings) {                                                \
-        int backtrace_i;                                                      \
-        for (backtrace_i = 0; backtrace_i < backtrace_depth; ++backtrace_i) { \
-          bf_sys_log_and_trace(                                               \
-              BF_MOD_SYS, BF_LOG_ERR, "%s", backtrace_strings[backtrace_i]);  \
-        }                                                                     \
-      }                                                                       \
-    }                                                                         \
-    assert(x);                                                                \
+#define bf_sys_assert(x)                                                       \
+  do {                                                                         \
+    int assert_val = !!(x);                                                    \
+    if (!assert_val) {                                                         \
+      void *backtrace_buf[128];                                                \
+      int backtrace_depth = backtrace(backtrace_buf, 128);                     \
+      char **backtrace_strings =                                               \
+          backtrace_symbols(backtrace_buf, backtrace_depth);                   \
+      if (backtrace_strings) {                                                 \
+        int backtrace_i;                                                       \
+        for (backtrace_i = 0; backtrace_i < backtrace_depth; ++backtrace_i) {  \
+          bf_sys_log_and_trace(BF_MOD_SYS, BF_LOG_ERR, "%s",                   \
+                               backtrace_strings[backtrace_i]);                \
+        }                                                                      \
+      }                                                                        \
+    }                                                                          \
+    assert(x);                                                                 \
   } while (0)
 #endif
 
@@ -60,18 +60,16 @@ extern int bf_sys_dbg_mode();
 }
 #endif /* C++ */
 #define bf_sys_dbgchk_str(x) #x
-#define bf_sys_dbgchk(x)                                             \
-  {                                                                  \
-    if (bf_sys_dbg_mode()) {                                         \
-      bf_sys_assert(x);                                              \
-    } else if (!(x)) {                                               \
-      bf_sys_log_and_trace(BF_MOD_SYS,                               \
-                           BF_LOG_ERR,                               \
-                           "ASSERTION FAILED: \"" bf_sys_dbgchk_str( \
-                               x) "\" (" #x ") from %s:%d",          \
-                           __func__,                                 \
-                           __LINE__);                                \
-    }                                                                \
+#define bf_sys_dbgchk(x)                                                       \
+  {                                                                            \
+    if (bf_sys_dbg_mode()) {                                                   \
+      bf_sys_assert(x);                                                        \
+    } else if (!(x)) {                                                         \
+      bf_sys_log_and_trace(BF_MOD_SYS, BF_LOG_ERR,                             \
+                           "ASSERTION FAILED: \"" bf_sys_dbgchk_str(           \
+                               x) "\" (" #x ") from %s:%d",                    \
+                           __func__, __LINE__);                                \
+    }                                                                          \
   }
 #endif
 

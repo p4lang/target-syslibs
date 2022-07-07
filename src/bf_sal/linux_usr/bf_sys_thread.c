@@ -22,13 +22,11 @@
  */
 
 #define _GNU_SOURCE
-#include <unistd.h>
 #include <pthread.h>
 #include <target-sys/bf_sal/bf_sys_thread.h>
+#include <unistd.h>
 
-int bf_sys_thread_create(bf_sys_thread_t *thr,
-                         thread_fn fn,
-                         void *arg,
+int bf_sys_thread_create(bf_sys_thread_t *thr, thread_fn fn, void *arg,
                          int flags) {
   pthread_t *th = (pthread_t *)thr;
 

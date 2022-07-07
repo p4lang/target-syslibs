@@ -14,7 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 int bf_sys_dbg_mode() {
 #ifdef TARGET_SYS_LIBS_DEBUG_MODE
   return 1;

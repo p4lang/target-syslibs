@@ -21,25 +21,25 @@
  *
  */
 
-#include <config.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <sys/stat.h>
 #include <assert.h>
+#include <config.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 #include <target-sys/bf_sal/bf_sys_mem.h>
 #include <target-sys/bf_sal/bf_sys_str.h>
+#include <unistd.h>
 
 /* use zlog for logging only */
-#include <zlog/src/zlog.h>
 #include <zlog/src/category.h>
+#include <zlog/src/zlog.h>
 
-#include <target-sys/bf_sal/bf_sys_log.h>
 #include "bf_sys_log_internal.h"
+#include <target-sys/bf_sal/bf_sys_log.h>
 
 /**
  * bf_sys_log implementation for linux userspace
@@ -69,14 +69,16 @@ static zlog_category_t *zlog_cat[BF_MOD_MAX];
  * in bf_sys_log.h
  */
 static const char zlog_cat_name[BF_MOD_MAX][32] = {
-    "BF_SYS",  "BF_UTIL", "BF_LLD",  "BF_PIPE",  "BF_TM",  "BF_MC",
-    "BF_PKT",  "BF_DVM",  "BF_PORT", "BF_AVAGO", "BF_DRU", "BF_MAP",
-    "BF_API",  "BF_SAI",  "BF_PI",   "BF_PLTFM", "BF_PAL", "BF_PM",
+    "BF_SYS",  "BF_UTIL", "BF_LLD",  "BF_PIPE",   "BF_TM",  "BF_MC",
+    "BF_PKT",  "BF_DVM",  "BF_PORT", "BF_AVAGO",  "BF_DRU", "BF_MAP",
+    "BF_API",  "BF_SAI",  "BF_PI",   "BF_PLTFM",  "BF_PAL", "BF_PM",
     "BF_KNET", "BF_BFRT", "BF_P4RT", "BF_SWITCHD"};
 
 int zlog_would_log_at_level(zlog_category_t *category, int level) {
-  if (!category) return 0;
-  if (zlog_category_needless_level(category, level)) return 0;
+  if (!category)
+    return 0;
+  if (zlog_category_needless_level(category, level))
+    return 0;
   return 1;
 }
 
@@ -85,16 +87,16 @@ int zlog_would_log_at_level(zlog_category_t *category, int level) {
  */
 static int bf_get_zlog_level(int bf_level) {
   switch (bf_level) {
-    case BF_LOG_CRIT:
-      return ZLOG_LEVEL_FATAL;
-    case BF_LOG_ERR:
-      return ZLOG_LEVEL_ERROR;
-    case BF_LOG_WARN:
-      return ZLOG_LEVEL_WARN;
-    case BF_LOG_INFO:
-      return ZLOG_LEVEL_INFO;
-    case BF_LOG_DBG:
-      return ZLOG_LEVEL_DEBUG;
+  case BF_LOG_CRIT:
+    return ZLOG_LEVEL_FATAL;
+  case BF_LOG_ERR:
+    return ZLOG_LEVEL_ERROR;
+  case BF_LOG_WARN:
+    return ZLOG_LEVEL_WARN;
+  case BF_LOG_INFO:
+    return ZLOG_LEVEL_INFO;
+  case BF_LOG_DBG:
+    return ZLOG_LEVEL_DEBUG;
   }
 
   /* there is no "no-log" level in zlog, so, setting to the least important
@@ -113,7 +115,8 @@ static int bf_sys_zlog_init(const char *arg1) {
   if (NULL == cfg_file_name) {
     cfg_file_name = DEFAULT_ZLOG_CFG_FILE;
   }
-  if (zlog_cur_log_file) bf_sys_free(zlog_cur_log_file);
+  if (zlog_cur_log_file)
+    bf_sys_free(zlog_cur_log_file);
   zlog_cur_log_file = bf_sys_strdup(ZLOG_CFG_FILE);
 
   if (stat(ZLOG_CFG_FILE, &sb) != 0) {
@@ -124,19 +127,23 @@ static int bf_sys_zlog_init(const char *arg1) {
      * names plus a few more bytes for the fixed part of the command. */
     int len = 10 + strlen(cfg_file_name) + strlen(ZLOG_CFG_FILE);
     temp_buff = bf_sys_malloc(len);
-    if (!temp_buff) return -1;
+    if (!temp_buff)
+      return -1;
     err = snprintf(temp_buff, len, "cp %s %s", cfg_file_name, ZLOG_CFG_FILE);
-    if (!(err < 0 || err >= len)) err = system(temp_buff);
+    if (!(err < 0 || err >= len))
+      err = system(temp_buff);
     if (err < 0 || err >= len) {
       printf("error copying zlog config file \"%s\"\n", temp_buff);
       /* fall back to user supplied file name */
-      if (zlog_cur_log_file) bf_sys_free(zlog_cur_log_file);
+      if (zlog_cur_log_file)
+        bf_sys_free(zlog_cur_log_file);
       zlog_cur_log_file = bf_sys_strdup(cfg_file_name);
     }
     bf_sys_free(temp_buff);
   }
 
-  if (!zlog_cur_log_file) return -1;
+  if (!zlog_cur_log_file)
+    return -1;
 
   if (zlog_init(zlog_cur_log_file) != 0) {
     printf("error initializing with bf_sys_log file %s\n", zlog_cur_log_file);
@@ -196,28 +203,23 @@ int bf_sys_log_close(void) {
 }
 
 int bf_sys_log(int module, int level, const char *format, ...) {
-  if (module >= BF_MOD_MAX) return -1;
+  if (module >= BF_MOD_MAX)
+    return -1;
   bool needs_log =
       zlog_would_log_at_level(zlog_cat[module], bf_get_zlog_level(level));
 
   if (needs_log) {
     va_list v;
     va_start(v, format);
-    vzlog(zlog_cat[module],
-          NULL,
-          0,
-          NULL,
-          0,
-          0,
-          bf_get_zlog_level(level),
-          format,
-          v);
+    vzlog(zlog_cat[module], NULL, 0, NULL, 0, 0, bf_get_zlog_level(level),
+          format, v);
     va_end(v);
   }
   return 0;
 }
 int bf_sys_trace(int module, int level, const char *format, ...) {
-  if (module >= BF_MOD_MAX) return -1;
+  if (module >= BF_MOD_MAX)
+    return -1;
   int err = 0;
   (void)format;
   bool needs_trace = level <= bf_sys_trace_level[module];
@@ -229,7 +231,8 @@ int bf_sys_trace(int module, int level, const char *format, ...) {
 }
 
 int bf_sys_log_and_trace(int module, int level, const char *format, ...) {
-  if (module >= BF_MOD_MAX) return -1;
+  if (module >= BF_MOD_MAX)
+    return -1;
   int err = 0;
   bool needs_trace = level <= bf_sys_trace_level[module];
   bool needs_log =
@@ -241,29 +244,25 @@ int bf_sys_log_and_trace(int module, int level, const char *format, ...) {
   if (needs_log) {
     va_list v;
     va_start(v, format);
-    vzlog(zlog_cat[module],
-          NULL,
-          0,
-          NULL,
-          0,
-          0,
-          bf_get_zlog_level(level),
-          format,
-          v);
+    vzlog(zlog_cat[module], NULL, 0, NULL, 0, 0, bf_get_zlog_level(level),
+          format, v);
     va_end(v);
   }
   return err;
 }
 
 int bf_sys_log_is_log_enabled(int module, int level) {
-  if (module >= BF_MOD_MAX) return -1;
-  if (module < 0) return -1;
+  if (module >= BF_MOD_MAX)
+    return -1;
+  if (module < 0)
+    return -1;
 
   bool needs_trace = level <= bf_sys_trace_level[module];
   bool needs_log =
       zlog_would_log_at_level(zlog_cat[module], bf_get_zlog_level(level));
 
-  if (needs_trace || needs_log) return 1;
+  if (needs_trace || needs_log)
+    return 1;
   return 0;
 }
 
@@ -303,20 +302,13 @@ int bf_sys_log_level_set(int module, int output, int bf_level) {
     len = 128 + 4 * strlen(mod_name) + 3 * strlen(zlog_cur_log_file) +
           2 * strlen(level_name);
     sed_cmd = bf_sys_malloc(len);
-    if (!sed_cmd) return -1;
-    rc = snprintf(sed_cmd,
-                  len,
+    if (!sed_cmd)
+      return -1;
+    rc = snprintf(sed_cmd, len,
                   "grep -q \"%s.* >stdout\" %s && sed -i 's/%s.* >stdout/%s.%s "
                   ">stdout/' %s || echo '%s.%s >stdout;console_format' >> %s",
-                  mod_name,
-                  zlog_cur_log_file,
-                  mod_name,
-                  mod_name,
-                  level_name,
-                  zlog_cur_log_file,
-                  mod_name,
-                  level_name,
-                  zlog_cur_log_file);
+                  mod_name, zlog_cur_log_file, mod_name, mod_name, level_name,
+                  zlog_cur_log_file, mod_name, level_name, zlog_cur_log_file);
   } else {
     /* file logging */
     /* Set the length of the command string based on the length of each string
@@ -325,26 +317,17 @@ int bf_sys_log_level_set(int module, int output, int bf_level) {
     len = 64 + 3 * strlen(mod_name) + 2 * strlen(zlog_cur_log_file) +
           strlen(level_name);
     sed_cmd = bf_sys_malloc(len);
-    if (!sed_cmd) return -1;
-    rc = snprintf(sed_cmd,
-                  len,
+    if (!sed_cmd)
+      return -1;
+    rc = snprintf(sed_cmd, len,
                   "grep -q \"%s.* \"\"\" %s && sed -i 's/%s.* \"/%s.%s \"/' %s",
-                  mod_name,
-                  zlog_cur_log_file,
-                  mod_name,
-                  mod_name,
-                  level_name,
+                  mod_name, zlog_cur_log_file, mod_name, mod_name, level_name,
                   zlog_cur_log_file);
   }
   if (rc < 0 || rc >= len) {
-    printf(
-        "Error setting log level: sts %d len %d module \"%s\" level \"%s\" "
-        "file \"%s\"\n",
-        rc,
-        len,
-        mod_name,
-        level_name,
-        zlog_cur_log_file);
+    printf("Error setting log level: sts %d len %d module \"%s\" level \"%s\" "
+           "file \"%s\"\n",
+           rc, len, mod_name, level_name, zlog_cur_log_file);
     bf_sys_free(sed_cmd);
     return -1;
   }
@@ -377,12 +360,9 @@ int bf_sys_syslog_level_set(int bf_level) {
   }
   strncpy(level_name, zlog_cfg_level_name[bf_level], sizeof(level_name) - 1);
   level_name[sizeof(level_name) - 1] = 0;
-  snprintf(sed_cmd,
-           100,
+  snprintf(sed_cmd, 100,
            "sed -i /syslog/d %s && echo '*.%s >syslog , LOG_USER' >> %s",
-           zlog_cur_log_file,
-           level_name,
-           zlog_cur_log_file);
+           zlog_cur_log_file, level_name, zlog_cur_log_file);
   if (system(sed_cmd) < 0) {
     return -1;
   }

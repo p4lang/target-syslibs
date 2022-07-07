@@ -19,9 +19,11 @@
 #include <target-sys/bf_sal/bf_sys_str.h>
 
 char *bf_sys_strdup(const char *c) {
-  if (!c) return NULL;
+  if (!c)
+    return NULL;
   char *p = bf_sys_malloc(strlen(c) + 1);
-  if (!p) return NULL;
+  if (!p)
+    return NULL;
   strcpy(p, c);
   return p;
 }

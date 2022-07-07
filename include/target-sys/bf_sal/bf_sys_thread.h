@@ -56,9 +56,7 @@ typedef void *bf_sys_thread_t;
  * @return
  *  0 on Success, error code on failure
  */
-int bf_sys_thread_create(bf_sys_thread_t *thr,
-                         thread_fn fn,
-                         void *arg,
+int bf_sys_thread_create(bf_sys_thread_t *thr, thread_fn fn, void *arg,
                          int flags);
 
 /**

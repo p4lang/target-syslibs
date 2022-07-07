@@ -262,8 +262,7 @@ int bf_sys_rwlock_rdlock(bf_sys_rwlock_t *lock);
  * @return Status
  *  0 on Success(rdlock acquired), -1 on failure
  */
-int bf_sys_rwlock_timedrdlock(bf_sys_rwlock_t *lock,
-                              long abs_sec,
+int bf_sys_rwlock_timedrdlock(bf_sys_rwlock_t *lock, long abs_sec,
                               long abs_nsec);
 
 /**
@@ -295,8 +294,7 @@ int bf_sys_rwlock_wrlock(bf_sys_rwlock_t *lock);
  * @return Status
  *  0 on Success(wrlock acquired), -1 on failure
  */
-int bf_sys_rwlock_timedwrlock(bf_sys_rwlock_t *lock,
-                              long abs_sec,
+int bf_sys_rwlock_timedwrlock(bf_sys_rwlock_t *lock, long abs_sec,
                               long abs_nsec);
 
 /**

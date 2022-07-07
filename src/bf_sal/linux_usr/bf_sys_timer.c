@@ -21,16 +21,16 @@
  *
  */
 
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
 #include <sys/time.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <libev/ev.h>
-#include <target-sys/bf_sal/bf_sys_timer.h>
 #include <target-sys/bf_sal/bf_sys_mem.h>
+#include <target-sys/bf_sal/bf_sys_timer.h>
 
 typedef struct {
   ev_async async_w;
@@ -114,7 +114,7 @@ bf_sys_timer_status_t bf_sys_timer_stop(bf_sys_timer_t *t) {
   }
   ev_timer_stop(u.loop, evt);
   ev_async_send(u.loop, &u.async_w);
-  status =  pthread_mutex_unlock(&u.lock);
+  status = pthread_mutex_unlock(&u.lock);
   if (status != 0) {
     return BF_SYS_TIMER_NO_RESOURCES;
   }
@@ -156,7 +156,8 @@ static void l_acquire(EV_P) {
 bf_sys_timer_status_t bf_sys_timer_init(void) {
   u.loop = EV_DEFAULT; /* or ev_default_loop (0); */
 
-  if (!u.loop) return BF_SYS_TIMER_NO_RESOURCES;
+  if (!u.loop)
+    return BF_SYS_TIMER_NO_RESOURCES;
 
 /* dereferencing type-punned pointer will break strict-aliasing rules
  * so, apply temporary GCC diagnostics pragma

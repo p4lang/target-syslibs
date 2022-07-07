@@ -54,8 +54,8 @@ typedef enum { bf_log_plain = 0, bf_log_timestamp } bf_log_format;
  * @return
  *  0 on Sucess, -1 on error
  */
-int bf_sys_log_array(
-    int module, int bf_level, const char *indent, uint8_t *array, size_t len);
+int bf_sys_log_array(int module, int bf_level, const char *indent,
+                     uint8_t *array, size_t len);
 
 /**
  * set log destination

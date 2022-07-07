@@ -39,14 +39,9 @@ typedef uint64_t bf_phys_addr_t;
 typedef bf_phys_addr_t bf_dma_addr_t;
 
 /* external modules register following dma bus map functions */
-typedef int (*bf_dma_bus_map)(int dev_id,
-                              uint32_t subdev_id,
-                              void *phy_addr,
-                              size_t size,
-                              void **dma_addr);
-typedef int (*bf_dma_bus_unmap)(int dev_id,
-                                uint32_t subdev_id,
-                                void *dma_addr,
+typedef int (*bf_dma_bus_map)(int dev_id, uint32_t subdev_id, void *phy_addr,
+                              size_t size, void **dma_addr);
+typedef int (*bf_dma_bus_unmap)(int dev_id, uint32_t subdev_id, void *dma_addr,
                                 size_t size);
 
 /**
@@ -94,12 +89,8 @@ int bf_sys_dma_lib_init(void *param1, void *param2, void *param3);
  * @param align pool alignment must be power of 2
  * @return Status 0 on Success, -1 on failure
  */
-int bf_sys_dma_pool_create(char *pool_name,
-                           bf_sys_dma_pool_handle_t *hndl,
-                           int dev_id,
-                           uint32_t subdv_id,
-                           size_t size,
-                           int cnt,
+int bf_sys_dma_pool_create(char *pool_name, bf_sys_dma_pool_handle_t *hndl,
+                           int dev_id, uint32_t subdv_id, size_t size, int cnt,
                            unsigned align);
 
 /**
@@ -140,9 +131,7 @@ void *bf_mem_dma2virt(bf_sys_dma_pool_handle_t hndl, bf_dma_addr_t dma_addr);
  * @param phys_addr  physical address of buffer
  * @return Status 0 on Success, -1 on failure
  */
-int bf_sys_dma_alloc(bf_sys_dma_pool_handle_t hndl,
-                     size_t size,
-                     void **v_addr,
+int bf_sys_dma_alloc(bf_sys_dma_pool_handle_t hndl, size_t size, void **v_addr,
                      bf_phys_addr_t *phys_addr);
 
 /**
@@ -158,8 +147,7 @@ int bf_sys_dma_alloc(bf_sys_dma_pool_handle_t hndl,
  *         of performance.
  */
 int bf_sys_dma_get_phy_addr_from_pool(bf_sys_dma_pool_handle_t hndl,
-                                      void *v_addr,
-                                      bf_phys_addr_t *phy_addr);
+                                      void *v_addr, bf_phys_addr_t *phy_addr);
 
 /**
  * Allocate a buffer from a DMA memory pool
@@ -192,13 +180,9 @@ void bf_sys_dma_free(bf_sys_dma_pool_handle_t hndl, void *v_addr);
  * @param phys_addr  physical address of buffer
  * @return Status 0 on Success, -1 on failure
  */
-int bf_sys_dma_buffer_alloc(char *pool_name,
-                            bf_sys_dma_pool_handle_t *hndl,
-                            int dev_id,
-                            uint32_t subdv_id,
-                            size_t size,
-                            void **v_addr,
-                            bf_phys_addr_t *phys_addr);
+int bf_sys_dma_buffer_alloc(char *pool_name, bf_sys_dma_pool_handle_t *hndl,
+                            int dev_id, uint32_t subdv_id, size_t size,
+                            void **v_addr, bf_phys_addr_t *phys_addr);
 
 /**
  * Destroys a single buffer DMA memory pool
@@ -222,12 +206,9 @@ void bf_sys_dma_buffer_free(bf_sys_dma_pool_handle_t hndl, void *v_addr);
  * this function is meant to dynamically bus map a buffer. Static mapping
  * is implemented as part of bf_sys_dma_pool_create()
  */
-int bf_sys_dma_map(bf_sys_dma_pool_handle_t hndl,
-                   const void *cpu_vaddr,
-                   const bf_phys_addr_t phys_addr,
-                   size_t size,
-                   bf_dma_addr_t *dma_addr,
-                   bf_sys_dma_dir_t direction);
+int bf_sys_dma_map(bf_sys_dma_pool_handle_t hndl, const void *cpu_vaddr,
+                   const bf_phys_addr_t phys_addr, size_t size,
+                   bf_dma_addr_t *dma_addr, bf_sys_dma_dir_t direction);
 
 /**
  * bus unmap a dma buffer
@@ -241,10 +222,8 @@ int bf_sys_dma_map(bf_sys_dma_pool_handle_t hndl,
  * this function is meant to dynamically bus unmap a buffer. Static unmapping
  * is implemented as part of bf_sys_dma_pool_destroy()
  */
-int bf_sys_dma_unmap(bf_sys_dma_pool_handle_t hndl,
-                     const void *cpu_vaddr,
-                     size_t size,
-                     bf_sys_dma_dir_t direction);
+int bf_sys_dma_unmap(bf_sys_dma_pool_handle_t hndl, const void *cpu_vaddr,
+                     size_t size, bf_sys_dma_dir_t direction);
 
 /**
  * cache flush a buffer

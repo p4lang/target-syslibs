@@ -21,26 +21,26 @@
  *
  */
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <assert.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <inttypes.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <inttypes.h>
-#include <fcntl.h>
-#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
-#include <errno.h>
+#include <sys/types.h>
 #include <target-sys/bf_sal/bf_sys_dma.h>
 #include <target-sys/bf_sal/bf_sys_mem.h>
+#include <unistd.h>
 
 #define BF_INVALID_PHY_ADDR ((bf_phys_addr_t)(0xFFFFFFFFFFFFFFFFULL))
 #define BF_INVALID_DMA_ADDR ((bf_dma_addr_t)(0xFFFFFFFFFFFFFFFFULL))
 
 #define POOL_HDR_SIZE (4 * 1024)
-#define ALIGN_TO_BF_PAGE_SIZE(x) \
+#define ALIGN_TO_BF_PAGE_SIZE(x)                                               \
   (((x) + BF_HUGE_PAGE_SIZE - 1) / BF_HUGE_PAGE_SIZE * BF_HUGE_PAGE_SIZE)
 
 /**
@@ -69,12 +69,11 @@ typedef struct {
   char name[64];                /* pool name */
   bf_huge_page_info_t *huge_page_info_ptr; /* an array of huge page pointers */
   int num_huge_pages; /* number of huge pages allocated for the DMA memory pool
-                         */
-  unsigned int
-      pool_hdr_offset; /* offset to be added so that no buffer spills over from
-                          the physical page */
-  int fd;              /* file handle of bf device for dma bus mapping */
-  int dev_id;          /* device id that the pool belongs to */
+                       */
+  unsigned int pool_hdr_offset; /* offset to be added so that no buffer spills
+                                   over from the physical page */
+  int fd;     /* file handle of bf device for dma bus mapping */
+  int dev_id; /* device id that the pool belongs to */
   uint32_t
       subdev_id; /* subdev_id (within the device id) that the pool belongs to */
 } bf_huge_pool_t;
@@ -115,8 +114,7 @@ bf_phys_addr_t bf_mem_virt2phy(const void *virtaddr) {
 
   fd = open("/proc/self/pagemap", O_RDONLY);
   if (fd < 0) {
-    printf("%s(): cannot open /proc/self/pagemap: %s\n",
-           __func__,
+    printf("%s(): cannot open /proc/self/pagemap: %s\n", __func__,
            strerror(errno));
     return BF_INVALID_PHY_ADDR;
   }
@@ -124,25 +122,23 @@ bf_phys_addr_t bf_mem_virt2phy(const void *virtaddr) {
   virt_pfn = (unsigned long)virtaddr / page_size;
   offset = sizeof(uint64_t) * virt_pfn;
   if (lseek(fd, offset, SEEK_SET) == (off_t)-1) {
-    printf("%s(): seek error in /proc/self/pagemap: %s\n",
-           __func__,
+    printf("%s(): seek error in /proc/self/pagemap: %s\n", __func__,
            strerror(errno));
     close(fd);
     return BF_INVALID_PHY_ADDR;
   }
 
   if (read(fd, &page, sizeof(uint64_t)) < 0) {
-    printf("%s(): cannot read /proc/self/pagemap: %s\n",
-           __func__,
+    printf("%s(): cannot read /proc/self/pagemap: %s\n", __func__,
            strerror(errno));
     close(fd);
     return BF_INVALID_PHY_ADDR;
   }
 
   /*
-  * the pfn (page frame number) are bits 0-54 (see
-  * pagemap.txt in linux Documentation)
-  */
+   * the pfn (page frame number) are bits 0-54 (see
+   * pagemap.txt in linux Documentation)
+   */
   phys_addr = ((page & 0x7fffffffffffffULL) * page_size) +
               ((unsigned long)virtaddr % page_size);
   close(fd);
@@ -187,12 +183,9 @@ static void *alloc_huge_pages(size_t size, unsigned int header_offset) {
   char *ptr;
 
   actual_size = ALIGN_TO_BF_PAGE_SIZE(size + header_offset);
-  ptr = (char *)mmap(NULL,
-                     actual_size,
-                     PROT_READ | PROT_WRITE,
+  ptr = (char *)mmap(NULL, actual_size, PROT_READ | PROT_WRITE,
                      MAP_SHARED | MAP_ANONYMOUS | MAP_POPULATE | MAP_HUGETLB,
-                     -1,
-                     0);
+                     -1, 0);
   if (ptr == MAP_FAILED) {
     return NULL;
   }
@@ -203,10 +196,8 @@ static void *alloc_huge_pages(size_t size, unsigned int header_offset) {
 }
 
 /* free "ALL" huge pages belonging to a dma pool */
-static void free_huge_pages(int dev_id,
-                            uint32_t subdev_id,
-                            bf_huge_page_info_t *base_huge_page,
-                            void *ptr,
+static void free_huge_pages(int dev_id, uint32_t subdev_id,
+                            bf_huge_page_info_t *base_huge_page, void *ptr,
                             unsigned int header_offset) {
   void *huge_ptr;
   size_t actual_size;
@@ -228,8 +219,7 @@ static void free_huge_pages(int dev_id,
   if (bf_sys_dma_unmap_fn) {
     bf_huge_page_info_t *temp_ptr = base_huge_page;
     for (i = 0; i < (int)(actual_size / BF_HUGE_PAGE_SIZE); i++) {
-      if (bf_sys_dma_unmap_fn(dev_id,
-                              subdev_id,
+      if (bf_sys_dma_unmap_fn(dev_id, subdev_id,
                               (void *)(uintptr_t)(temp_ptr->base_dma_addr),
                               BF_HUGE_PAGE_SIZE)) {
         printf("error in dma unmap ioctl for dma addr %p\n",
@@ -264,10 +254,8 @@ conv_to_prev_aligned (uint64_t val, uint64_t alignment)
  * @param ptr virtual address of the first huge page
  * @param cnt number of hugepages in the DMA memory pool
  */
-static bf_huge_page_info_t *log_virt_dma_addr(int dev_id,
-                                              uint32_t subdev_id,
-                                              void *ptr,
-                                              int cnt) {
+static bf_huge_page_info_t *log_virt_dma_addr(int dev_id, uint32_t subdev_id,
+                                              void *ptr, int cnt) {
   int i;
   char *huge_ptr = (char *)ptr;
   bf_huge_page_info_t *huge_page;
@@ -288,11 +276,9 @@ static bf_huge_page_info_t *log_virt_dma_addr(int dev_id,
      */
     if (bf_sys_dma_map_fn) {
       /* replace the phy address with bus address returned by the kernel */
-      if (bf_sys_dma_map_fn(dev_id,
-                            subdev_id,
-                            (void *)(uintptr_t)huge_page[i].base_dma_addr,
-                            BF_HUGE_PAGE_SIZE,
-                            (void **)&(huge_page[i].base_dma_addr))) {
+      if (bf_sys_dma_map_fn(
+              dev_id, subdev_id, (void *)(uintptr_t)huge_page[i].base_dma_addr,
+              BF_HUGE_PAGE_SIZE, (void **)&(huge_page[i].base_dma_addr))) {
         printf("error in dma map ioctl for phy addr %p\n",
                (void *)(uintptr_t)huge_page[i].base_dma_addr);
         assert(0);
@@ -345,12 +331,8 @@ void *bf_mem_dma2virt(bf_sys_dma_pool_handle_t hndl, bf_dma_addr_t dma_addr) {
  *  @param fd file handle of bf device that provides dma bus mapping services
  *  align must be power of 2, caller to ensure.
  */
-int bf_sys_dma_pool_create(char *pool_name,
-                           bf_sys_dma_pool_handle_t *hndl,
-                           int dev_id,
-                           uint32_t subdev_id,
-                           size_t size,
-                           int cnt,
+int bf_sys_dma_pool_create(char *pool_name, bf_sys_dma_pool_handle_t *hndl,
+                           int dev_id, uint32_t subdev_id, size_t size, int cnt,
                            unsigned align) {
   bf_huge_pool_t *dma_pool;
   char *buf_ptr;
@@ -491,10 +473,8 @@ void bf_sys_dma_pool_destroy(bf_sys_dma_pool_handle_t hndl) {
   assert(dma_pool);
 
   /* free the hugepages pool containing the buffers */
-  free_huge_pages(dma_pool->dev_id,
-                  dma_pool->subdev_id,
-                  dma_pool->huge_page_info_ptr,
-                  dma_pool->pool_ptr,
+  free_huge_pages(dma_pool->dev_id, dma_pool->subdev_id,
+                  dma_pool->huge_page_info_ptr, dma_pool->pool_ptr,
                   dma_pool->pool_hdr_offset);
   /* free the queue containing the pointers to buffers */
   bf_sys_free(dma_pool->pool_buf_ptr);
@@ -545,9 +525,7 @@ static int bf_push_free_buf(bf_huge_pool_t *pool, void *buf_ptr) {
 /**
  *  Allocate a buffer from a DMA memory pool
  */
-int bf_sys_dma_alloc(bf_sys_dma_pool_handle_t hndl,
-                     size_t size,
-                     void **v_addr,
+int bf_sys_dma_alloc(bf_sys_dma_pool_handle_t hndl, size_t size, void **v_addr,
                      bf_phys_addr_t *phys_addr) {
   (void)size;
   bf_huge_pool_t *dma_pool = (bf_huge_pool_t *)hndl;
@@ -561,8 +539,8 @@ int bf_sys_dma_alloc(bf_sys_dma_pool_handle_t hndl,
     *phys_addr = 0;
     return -1;
   }
-  if (bf_sys_dma_get_phy_addr_from_pool(
-          dma_pool, *v_addr, (bf_dma_addr_t *)phys_addr)) {
+  if (bf_sys_dma_get_phy_addr_from_pool(dma_pool, *v_addr,
+                                        (bf_dma_addr_t *)phys_addr)) {
     printf("Error getting buf physical address\n");
     return -1;
   }
@@ -594,8 +572,7 @@ int bf_sys_dma_buffer_index(bf_sys_dma_pool_handle_t hndl, void *v_addr) {
  * get the physical address derived from the cached base physical address
  */
 int bf_sys_dma_get_phy_addr_from_pool(bf_sys_dma_pool_handle_t hndl,
-                                      void *v_addr,
-                                      bf_phys_addr_t *phy_addr) {
+                                      void *v_addr, bf_phys_addr_t *phy_addr) {
   bf_huge_pool_t *dma_pool = (bf_huge_pool_t *)hndl;
   bf_phys_addr_t base_phy_addr;
   uint8_t *pool_base_vaddr, *base_vaddr;
@@ -634,13 +611,9 @@ void bf_sys_dma_free(bf_sys_dma_pool_handle_t hndl, void *v_addr) {
 /**
  *  Allocate a single buffer DMA memory pool
  */
-int bf_sys_dma_buffer_alloc(char *pool_name,
-                            bf_sys_dma_pool_handle_t *hndl,
-                            int dev_id,
-                            uint32_t subdev_id,
-                            size_t size,
-                            void **v_addr,
-                            bf_phys_addr_t *phys_addr) {
+int bf_sys_dma_buffer_alloc(char *pool_name, bf_sys_dma_pool_handle_t *hndl,
+                            int dev_id, uint32_t subdev_id, size_t size,
+                            void **v_addr, bf_phys_addr_t *phys_addr) {
   if (bf_sys_dma_pool_create(pool_name, hndl, dev_id, subdev_id, size, 1, 64) !=
       0) {
     *v_addr = NULL;
@@ -665,12 +638,9 @@ void bf_sys_dma_buffer_free(bf_sys_dma_pool_handle_t hndl, void *v_addr) {
 /**
  * bus map a buffer
  */
-int bf_sys_dma_map(bf_sys_dma_pool_handle_t hndl,
-                   const void *cpu_vaddr,
-                   const bf_phys_addr_t phys_addr,
-                   size_t size,
-                   bf_dma_addr_t *dma_addr,
-                   bf_sys_dma_dir_t direction) {
+int bf_sys_dma_map(bf_sys_dma_pool_handle_t hndl, const void *cpu_vaddr,
+                   const bf_phys_addr_t phys_addr, size_t size,
+                   bf_dma_addr_t *dma_addr, bf_sys_dma_dir_t direction) {
   /* Since for our implementation, the physical and the DMA addresses are the
      same,
      just return the physical address as the DMA address */
@@ -685,10 +655,8 @@ int bf_sys_dma_map(bf_sys_dma_pool_handle_t hndl,
 /**
  * bus unmap a buffer
  */
-int bf_sys_dma_unmap(bf_sys_dma_pool_handle_t hndl,
-                     const void *cpu_vaddr,
-                     size_t size,
-                     bf_sys_dma_dir_t direction) {
+int bf_sys_dma_unmap(bf_sys_dma_pool_handle_t hndl, const void *cpu_vaddr,
+                     size_t size, bf_sys_dma_dir_t direction) {
   /* nothing to do for this platform */
   (void)hndl;
   (void)cpu_vaddr;

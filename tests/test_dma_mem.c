@@ -15,8 +15,8 @@
  ******************************************************************************/
 
 #include <assert.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include <target-sys/bf_sal/bf_sys_dma.h>
 
@@ -65,8 +65,7 @@ static int test_dma_mem(void) {
   cptr = v_addr[12][0];
   for (i = 0; i < buff_size[12]; i++, cptr++) {
     if (*cptr != (uint8_t)(i + 5)) {
-      printf("mismatch in buff 12/0 read %x expected %x\n",
-             *cptr,
+      printf("mismatch in buff 12/0 read %x expected %x\n", *cptr,
              (uint8_t)(i + 5));
       return -1;
     }
@@ -89,10 +88,9 @@ static int test_dma_2_virt(void) {
             bf_mem_dma2virt(hndl[dma_pool_id], dma_addr[dma_pool_id][i] + j);
         if (((unsigned long)virtaddr - (unsigned long)v_addr[dma_pool_id][i]) !=
             j) {
-          printf(
-              "Failed to get the virtual address for the dma address: "
-              "%016lx\n",
-              (unsigned long)dma_addr[dma_pool_id][i] + j);
+          printf("Failed to get the virtual address for the dma address: "
+                 "%016lx\n",
+                 (unsigned long)dma_addr[dma_pool_id][i] + j);
           printf("DMA to virtual address translation test FAIL\n");
           return -1;
         }
@@ -118,8 +116,8 @@ static int dma_mem_test() {
   }
 
   for (i = 0; i < DMA_POOL_CNT; i++) {
-    ret = bf_sys_dma_pool_create(
-        dma_pool_name[i], &hndl[i], 0, 0, buff_size[i], buff_cnt[i], 256);
+    ret = bf_sys_dma_pool_create(dma_pool_name[i], &hndl[i], 0, 0, buff_size[i],
+                                 buff_cnt[i], 256);
     if (ret < 0) {
       printf("cannot alloc pool iteration %d\n", i);
       result = -1;
@@ -127,8 +125,8 @@ static int dma_mem_test() {
     }
 
     for (j = 0; j < (int)buff_cnt[i]; j++) {
-      ret = bf_sys_dma_alloc(
-          hndl[i], buff_size[i], &v_addr[i][j], &dma_addr[i][j]);
+      ret = bf_sys_dma_alloc(hndl[i], buff_size[i], &v_addr[i][j],
+                             &dma_addr[i][j]);
       if (ret < 0) {
         printf("cannot alloc buff iteration %d %d\n", i, j);
         result = -1;

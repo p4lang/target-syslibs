@@ -17,14 +17,14 @@
 #ifndef BF_SYS_INTF_H_INCLUDED
 #define BF_SYS_INTF_H_INCLUDED
 
-#include "bf_sys_mem.h"
-#include "bf_sys_str.h"
-#include "bf_sys_sem.h"
-#include "bf_sys_thread.h"
-#include "bf_sys_timer.h"
-#include "bf_sys_log.h"
 #include "bf_sys_assert.h"
 #include "bf_sys_dma.h"
+#include "bf_sys_log.h"
+#include "bf_sys_mem.h"
+#include "bf_sys_sem.h"
+#include "bf_sys_str.h"
+#include "bf_sys_thread.h"
+#include "bf_sys_timer.h"
 
 const char *target_syslib_get_version(void);
 const char *target_syslib_get_internal_version(void);
