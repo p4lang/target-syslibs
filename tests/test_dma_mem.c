@@ -1,29 +1,22 @@
 /*******************************************************************************
- * BAREFOOT NETWORKS CONFIDENTIAL & PROPRIETARY
+ * Copyright(c) 2021 Intel Corporation.
  *
- * Copyright (c) 2015-2019 Barefoot Networks, Inc.
-
- * All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this software except as stipulated in the License.
+ * You may obtain a copy of the License at
  *
- * NOTICE: All information contained herein is, and remains the property of
- * Barefoot Networks, Inc. and its suppliers, if any. The intellectual and
- * technical concepts contained herein are proprietary to Barefoot Networks,
- * Inc.
- * and its suppliers and may be covered by U.S. and Foreign Patents, patents in
- * process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material is
- * strictly forbidden unless prior written permission is obtained from
- * Barefoot Networks, Inc.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * No warranty, explicit or implicit is provided, unless granted under a
- * written agreement with Barefoot Networks, Inc.
- *
- * $Id: $
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
+
 #include <assert.h>
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include <target-sys/bf_sal/bf_sys_dma.h>
 
@@ -72,8 +65,7 @@ static int test_dma_mem(void) {
   cptr = v_addr[12][0];
   for (i = 0; i < buff_size[12]; i++, cptr++) {
     if (*cptr != (uint8_t)(i + 5)) {
-      printf("mismatch in buff 12/0 read %x expected %x\n",
-             *cptr,
+      printf("mismatch in buff 12/0 read %x expected %x\n", *cptr,
              (uint8_t)(i + 5));
       return -1;
     }
@@ -96,10 +88,9 @@ static int test_dma_2_virt(void) {
             bf_mem_dma2virt(hndl[dma_pool_id], dma_addr[dma_pool_id][i] + j);
         if (((unsigned long)virtaddr - (unsigned long)v_addr[dma_pool_id][i]) !=
             j) {
-          printf(
-              "Failed to get the virtual address for the dma address: "
-              "%016lx\n",
-              (unsigned long)dma_addr[dma_pool_id][i] + j);
+          printf("Failed to get the virtual address for the dma address: "
+                 "%016lx\n",
+                 (unsigned long)dma_addr[dma_pool_id][i] + j);
           printf("DMA to virtual address translation test FAIL\n");
           return -1;
         }
@@ -125,8 +116,8 @@ static int dma_mem_test() {
   }
 
   for (i = 0; i < DMA_POOL_CNT; i++) {
-    ret = bf_sys_dma_pool_create(
-        dma_pool_name[i], &hndl[i], 0, 0, buff_size[i], buff_cnt[i], 256);
+    ret = bf_sys_dma_pool_create(dma_pool_name[i], &hndl[i], 0, 0, buff_size[i],
+                                 buff_cnt[i], 256);
     if (ret < 0) {
       printf("cannot alloc pool iteration %d\n", i);
       result = -1;
@@ -134,8 +125,8 @@ static int dma_mem_test() {
     }
 
     for (j = 0; j < (int)buff_cnt[i]; j++) {
-      ret = bf_sys_dma_alloc(
-          hndl[i], buff_size[i], &v_addr[i][j], &dma_addr[i][j]);
+      ret = bf_sys_dma_alloc(hndl[i], buff_size[i], &v_addr[i][j],
+                             &dma_addr[i][j]);
       if (ret < 0) {
         printf("cannot alloc buff iteration %d %d\n", i, j);
         result = -1;

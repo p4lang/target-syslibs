@@ -1,26 +1,19 @@
 /*******************************************************************************
- * BAREFOOT NETWORKS CONFIDENTIAL & PROPRIETARY
+ * Copyright(c) 2021 Intel Corporation.
  *
- * Copyright (c) 2015-2019 Barefoot Networks, Inc.
-
- * All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this software except as stipulated in the License.
+ * You may obtain a copy of the License at
  *
- * NOTICE: All information contained herein is, and remains the property of
- * Barefoot Networks, Inc. and its suppliers, if any. The intellectual and
- * technical concepts contained herein are proprietary to Barefoot Networks,
- * Inc.
- * and its suppliers and may be covered by U.S. and Foreign Patents, patents in
- * process, and are protected by trade secret or copyright law.
- * Dissemination of this information or reproduction of this material is
- * strictly forbidden unless prior written permission is obtained from
- * Barefoot Networks, Inc.
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * No warranty, explicit or implicit is provided, unless granted under a
- * written agreement with Barefoot Networks, Inc.
- *
- * $Id: $
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
+
 /*!
  * @file bf_sys_timer.c
  * @date
@@ -28,16 +21,16 @@
  *
  */
 
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
 #include <sys/time.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <libev/ev.h>
-#include <target-sys/bf_sal/bf_sys_timer.h>
 #include <target-sys/bf_sal/bf_sys_mem.h>
+#include <target-sys/bf_sal/bf_sys_timer.h>
 
 typedef struct {
   ev_async async_w;
@@ -121,7 +114,7 @@ bf_sys_timer_status_t bf_sys_timer_stop(bf_sys_timer_t *t) {
   }
   ev_timer_stop(u.loop, evt);
   ev_async_send(u.loop, &u.async_w);
-  status =  pthread_mutex_unlock(&u.lock);
+  status = pthread_mutex_unlock(&u.lock);
   if (status != 0) {
     return BF_SYS_TIMER_NO_RESOURCES;
   }
@@ -163,7 +156,8 @@ static void l_acquire(EV_P) {
 bf_sys_timer_status_t bf_sys_timer_init(void) {
   u.loop = EV_DEFAULT; /* or ev_default_loop (0); */
 
-  if (!u.loop) return BF_SYS_TIMER_NO_RESOURCES;
+  if (!u.loop)
+    return BF_SYS_TIMER_NO_RESOURCES;
 
 /* dereferencing type-punned pointer will break strict-aliasing rules
  * so, apply temporary GCC diagnostics pragma
