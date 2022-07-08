@@ -29,9 +29,12 @@
 extern "C" {
 #endif
 
-#ifndef __KERNEL__
+#ifdef __KERNEL__
+#include <linux/types.h>
+#else
 #include <stddef.h>
-#endif
+#include <stdint.h>
+#endif /* __KERNEL */
 
 #define BF_HUGE_PAGE_SIZE (2 * 1024 * 1024)
 

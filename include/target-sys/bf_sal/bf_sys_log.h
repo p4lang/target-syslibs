@@ -28,8 +28,12 @@
 extern "C" {
 #endif
 
+#ifdef __KERNEL__
+#include <linux/types.h>
+#else
 #include <stddef.h>
 #include <stdint.h>
+#endif /* __KERNEL */
 
 /**
  * @addtogroup bf_sal-log
