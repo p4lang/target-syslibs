@@ -61,6 +61,7 @@ typedef void *bf_sys_rmutex_t;
 typedef void *bf_sys_cond_t;
 
 typedef int bf_sys_cmp_and_swp_t;
+typedef int bf_sys_lock_test_and_set_t;
 
 /**
  * initialize a mutex
@@ -386,6 +387,19 @@ int bf_sys_compare_and_swap(bf_sys_cmp_and_swp_t *var,
                             bf_sys_cmp_and_swp_t old_val,
                             bf_sys_cmp_and_swp_t new_val);
 
+/**
+ * perform an atomic test and set.
+ * writes the new_val to var
+ * @param var
+ *  pointer to var
+ * @param val
+ *  value to be written
+ * @return int
+ *  old value of the var if the set was successful
+ */
+
+int bf_sys_lock_test_set(bf_sys_lock_test_and_set_t *var,
+                         bf_sys_lock_test_and_set_t val);
 /* @} */
 
 #ifdef __cplusplus

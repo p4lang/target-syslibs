@@ -519,3 +519,8 @@ int bf_sys_compare_and_swap(bf_sys_cmp_and_swp_t *var,
                             bf_sys_cmp_and_swp_t new_val) {
   return __sync_bool_compare_and_swap(var, old_val, new_val);
 }
+
+int bf_sys_lock_test_set(bf_sys_lock_test_and_set_t *var,
+                         bf_sys_lock_test_and_set_t val) {
+  return __sync_lock_test_and_set(var, val);
+}
