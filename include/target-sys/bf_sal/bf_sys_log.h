@@ -77,8 +77,12 @@ extern "C" {
 #define BF_MOD_KNET (BF_MOD_START + 18)
 #define BF_MOD_BFRT (BF_MOD_START + 19)
 #define BF_MOD_P4RT (BF_MOD_START + 20)
+#define BF_MOD_SWITCHD (BF_MOD_START + 21)
+#define KRNLMON (BF_MOD_START + 22)
+#define OVSP4RT (BF_MOD_START + 23
+#define INFRAP4D (BF_MOD_START + 24)
 
-#define BF_MOD_MAX (BF_MOD_P4RT + 1)
+#define BF_MOD_MAX (INFRAP4D + 1)
 
 /*!
  * Macros BF Lo Destination flag bit masks

@@ -76,10 +76,11 @@ static zlog_category_t *zlog_cat[BF_MOD_MAX];
  * in bf_sys_log.h
  */
 static const char zlog_cat_name[BF_MOD_MAX][32] = {
-    "BF_SYS",  "BF_UTIL", "BF_LLD",  "BF_PIPE",  "BF_TM",  "BF_MC",
-    "BF_PKT",  "BF_DVM",  "BF_PORT", "BF_AVAGO", "BF_DRU", "BF_MAP",
-    "BF_API",  "BF_SAI",  "BF_PI",   "BF_PLTFM", "BF_PAL", "BF_PM",
-    "BF_KNET", "BF_BFRT", "BF_P4RT"};
+    "BF_SYS",  "BF_UTIL", "BF_LLD",  "BF_PIPE",   "BF_TM",  "BF_MC",
+    "BF_PKT",  "BF_DVM",  "BF_PORT", "BF_AVAGO",  "BF_DRU", "BF_MAP",
+    "BF_API",  "BF_SAI",  "BF_PI",   "BF_PLTFM",  "BF_PAL", "BF_PM",
+    "BF_KNET", "BF_BFRT", "BF_P4RT", "BF_SWITCHD", "KRNLMON", "OVSP4RT",
+    "INFRAP4D"};
 
 int zlog_would_log_at_level(zlog_category_t *category, int level) {
   if (!category) return 0;
