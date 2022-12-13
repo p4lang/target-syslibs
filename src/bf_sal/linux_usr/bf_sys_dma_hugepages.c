@@ -127,8 +127,8 @@ bf_phys_addr_t bf_mem_virt2phy(const void *virtaddr) {
     close(fd);
     return BF_INVALID_PHY_ADDR;
   }
-
-  if (read(fd, &page, sizeof(uint64_t)) < 0) {
+  uint64_t size_f = read(fd, &page, sizeof(uint64_t); 
+  if (size_f != sizeof(uint64_t) {
     printf("%s(): cannot read /proc/self/pagemap: %s\n", __func__,
            strerror(errno));
     close(fd);
