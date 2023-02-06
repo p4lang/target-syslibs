@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright(c) 2021 Intel Corporation.
+ * Copyright(c) 2021-2023 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this software except as stipulated in the License.
@@ -78,11 +78,9 @@ extern "C" {
 #define BF_MOD_BFRT (BF_MOD_START + 19)
 #define BF_MOD_P4RT (BF_MOD_START + 20)
 #define BF_MOD_SWITCHD (BF_MOD_START + 21)
-#define KRNLMON (BF_MOD_START + 22)
-#define OVSP4RT (BF_MOD_START + 23
-#define INFRAP4D (BF_MOD_START + 24)
+#define BF_MOD_KRNLMON (BF_MOD_START + 22)
 
-#define BF_MOD_MAX (INFRAP4D + 1)
+#define BF_MOD_MAX (BF_MOD_KRNLMON + 1)
 
 /*!
  * Macros BF Lo Destination flag bit masks
@@ -104,7 +102,7 @@ extern "C" {
  * @param arg3
  *  implementation specific parameter
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 int bf_sys_log_init(void *arg1, void *arg2, void *arg3);
 
@@ -114,7 +112,7 @@ int bf_sys_log_init(void *arg1, void *arg2, void *arg3);
  * @param none
  *
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 int bf_sys_log_close(void);
 
@@ -128,7 +126,7 @@ int bf_sys_log_close(void);
  * @param format
  *  formatted string
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 int bf_sys_log(int module, int bf_level, const char *format, ...);
 
@@ -142,7 +140,7 @@ int bf_sys_log(int module, int bf_level, const char *format, ...);
  * @param bf_level
  *  log level
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 int bf_sys_log_level_set(int module, int output, int bf_level);
 
@@ -163,7 +161,7 @@ int bf_sys_log_level_set(int module, int output, int bf_level);
  * @param format
  *  formatted string
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 int bf_sys_trace(int module, int bf_level, const char *format, ...);
 
@@ -180,7 +178,7 @@ int bf_sys_trace(int module, int bf_level, const char *format, ...);
  * @param bf_level
  *  trace level
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 void bf_sys_trace_level_set(int module, int bf_level);
 
@@ -194,7 +192,7 @@ void bf_sys_trace_level_set(int module, int bf_level);
  * @param size
  *  size of data actually read into buf
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 int bf_sys_trace_get(uint8_t *buf, size_t size, size_t *len_written);
 
@@ -204,7 +202,7 @@ int bf_sys_trace_get(uint8_t *buf, size_t size, size_t *len_written);
  * @param  none
  *
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 int bf_sys_trace_reset(void);
 
@@ -218,7 +216,7 @@ int bf_sys_trace_reset(void);
  * @param format
  *  formatted string
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 #ifdef BF_SYS_LOG_FORMAT_CHECK
 int bf_sys_log_and_trace(int module, int bf_level, const char *format, ...)
@@ -247,7 +245,7 @@ int bf_sys_log_is_log_enabled(int module, int level);
  * @param bf_level
  *  log level
  * @return
- *  0 on Sucess, -1 on error
+ *  0 on Success, -1 on error
  */
 int bf_sys_syslog_level_set(int level);
 
