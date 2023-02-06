@@ -82,6 +82,9 @@ extern "C" {
 
 #define BF_MOD_MAX (BF_MOD_KRNLMON + 1)
 
+/* Synonym for backward compatibility (deprecated) */
+#define KRNLMON BF_MOD_KRNLMON
+
 /*!
  * Macros BF Lo Destination flag bit masks
  */
