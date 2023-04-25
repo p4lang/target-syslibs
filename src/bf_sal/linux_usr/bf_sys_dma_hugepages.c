@@ -181,11 +181,17 @@ static uint32_t conv_to_next_aligned(uint32_t val, uint32_t alignment) {
 static void *alloc_huge_pages(size_t size, unsigned int header_offset) {
   size_t actual_size;
   char *ptr;
-
   actual_size = ALIGN_TO_BF_PAGE_SIZE(size + header_offset);
   ptr = (char *)mmap(NULL, actual_size, PROT_READ | PROT_WRITE,
-                     MAP_SHARED | MAP_ANONYMOUS | MAP_POPULATE | MAP_HUGETLB,
+                     MAP_SHARED | MAP_ANONYMOUS | MAP_POPULATE | MAP_HUGETLB |
+                         (21 << MAP_HUGE_SHIFT),
                      -1, 0);
+  if (ptr == MAP_FAILED) {
+    // If 2MB failed, retry with default size
+    ptr = (char *)mmap(NULL, actual_size, PROT_READ | PROT_WRITE,
+                       MAP_SHARED | MAP_ANONYMOUS | MAP_POPULATE | MAP_HUGETLB,
+                       -1, 0);
+  }
   if (ptr == MAP_FAILED) {
     return NULL;
   }
