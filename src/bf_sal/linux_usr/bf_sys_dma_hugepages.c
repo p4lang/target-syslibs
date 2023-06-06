@@ -504,7 +504,7 @@ static int bf_pop_free_buf(bf_huge_pool_t *pool, void **buf_ptr) {
     *buf_ptr = (pool->pool_buf_ptr)[pool->pool_buf_offset++];
   }
   /* open the gate */
-  pool->pool_gate = 0;
+  __sync_val_compare_and_swap(&pool->pool_gate, 1, 0);
   return err;
 }
 
@@ -524,7 +524,7 @@ static int bf_push_free_buf(bf_huge_pool_t *pool, void *buf_ptr) {
   }
 
   /* open the gate */
-  pool->pool_gate = 0;
+  __sync_val_compare_and_swap(&pool->pool_gate, 1, 0);
   return err;
 }
 
