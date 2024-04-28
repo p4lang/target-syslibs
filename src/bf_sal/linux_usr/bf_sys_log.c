@@ -157,7 +157,7 @@ static int bf_sys_zlog_init(const char *arg1) {
   return 0;
 }
 
-int bf_sys_log_zlog_reconfig(char *cfg_file_name) {
+int bf_sys_log_zlog_reconfig(const char *cfg_file_name) {
   if (zlog_reload(cfg_file_name) != 0) {
     printf("error initializing bf_sys_log\n");
     return -1;
@@ -165,7 +165,7 @@ int bf_sys_log_zlog_reconfig(char *cfg_file_name) {
   return 0;
 }
 
-zlog_category_t *bf_sys_log_get_cat(char *category_name) {
+zlog_category_t *bf_sys_log_get_cat(const char *category_name) {
   return (zlog_get_category(category_name));
 }
 
@@ -189,7 +189,7 @@ static int bf_sys_trace_init(int default_level) {
 /* arg1 - Path to logging config file.
  * arg2 - Trace level.
  * arg3 - Trace size. */
-int bf_sys_log_init(void *arg1, void *arg2, void *arg3) {
+int bf_sys_log_init(const void *arg1, const void *arg2, const void *arg3) {
   int err;
   (void)arg3;
 

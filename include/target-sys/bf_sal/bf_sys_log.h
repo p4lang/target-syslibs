@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright(c) 2021 Intel Corporation.
+ * Copyright(c) 2021-2024 Intel Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this software except as stipulated in the License.
@@ -106,7 +106,7 @@ extern "C" {
  * @return
  *  0 on Sucess, -1 on error
  */
-int bf_sys_log_init(void *arg1, void *arg2, void *arg3);
+int bf_sys_log_init(const void *arg1, const void *arg2, const void *arg3);
 
 /**
  * close bf_sys_log subsystem
